@@ -4,31 +4,24 @@ import java.util.Scanner;
 
 public class GetInputFiles {
 
-	static String getInput(){
+	// Takes user input filenames and returns filenames as an array.
+	static String[] getInput(){
 		Scanner scan = new Scanner(System.in);
 
 		System.out.print("Enter the names of .txt files to read into the dictionary: ");
+
 		String input = scan.nextLine();
 		String[] files = new String(input).split(" ");
 
-		printInput(files);
-
 		if (checkInput(files)) {
-			return input;
+			return files;
 		} else {
 			return getInput();
 		}
-
 	}
 
-	static void printInput(String[] input) {
-		for (String file: input) {
-			System.out.println(file);
-		}
-	}
-
+	// Makes sure each user entry exists within the current directory as a text file.
 	static boolean checkInput(String[] files) {
-	// @TODO: This needs to make sure the file exists
 		for (String fileName: files) {
 			File f = new File(fileName);
 
@@ -42,4 +35,12 @@ public class GetInputFiles {
 		}
 		return true;
 	}
+
+	// For Testing Purposes Only
+	static void printInput(String[] input) {
+		for (String file: input) {
+			System.out.println(file);
+		}
+	}
+
 }
