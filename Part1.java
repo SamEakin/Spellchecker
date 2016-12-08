@@ -14,14 +14,72 @@ public class Part1 {
 		// 2. Create dictionary
 		//HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
 		
-		// 2. Parse each text file into a formatted string.
+		// 3. Parse each text file into a formatted string.
 		checkFiles(files);
-		HashMap<String, Integer> dictionary = createDict(files);
+		//HashMap<String, Integer> dictionary = createDict(files);
+		TreeMap<String, Integer> dictionary = createTree(files);
 		System.out.println("DICTIONARY: -------------------------");
-		System.out.println(dictionary);
+		//System.out.println(dictionary.entrySet());
+		//System.out.println(dictionary.keySet());
+		//System.out.println(dictionary.entrySet());
+		int numberOfKeys = 100;
+		int currentKey = 0;
+		for (String key: dictionary.keySet()){
+			if (currentKey > numberOfKeys){
+				break;
+			}
+			currentKey++;
+			System.out.println(key);
+		}
+
+		/*for (int wordCount = 0; wordCount < 200; wordCount++){
+			int tempCount = 0;
+			for (Integer count: dictionary.values()) {
+				if (count == wordCount){
+					tempCount++;
+				}
+			}
+
+			System.out.println("Words repeated "+wordCount+" times:"+tempCount);
+		}
+		*/
 
 		//String testFileString = FileToString.formatString(files);
 		//System.out.println(testFileString);
+	}
+
+	public static TreeMap<String, Integer> createTree(String[] files) /*throws IOException*/ {
+		TreeMap<String, Integer> dictionary = new TreeMap<String, Integer>();
+		String word = "";
+		for (String file: files) {
+			Scanner s = null;
+			try {
+				s = new Scanner(new BufferedReader(new FileReader(file)));
+
+				while (s.hasNext()) {
+					word = split(s.next());
+					//bigFuckingString += s.next();
+					// @TODO: Call trim method & addToDictionary method
+					//BuildDict.	
+					Integer frequency = dictionary.get(word);
+					if (frequency == null) {
+						frequency = 1;
+					} else {
+						frequency++;
+					}
+					dictionary.put(word, frequency);
+				}
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (s != null) {
+					s.close();
+				}
+			}
+		}
+		return dictionary;
 	}
 
 	public static HashMap<String, Integer> createDict(String[] files) /*throws IOException*/ {
