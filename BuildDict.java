@@ -97,22 +97,10 @@ public class BuildDict {
 		return dictionary;
 	}
 
+	// Delete all non-spaces, non-letters, & make all lowercase.
 	public static String split(String input) {
-		// Delete all non-spaces, non-letters, & make all lowercase.
 		input = input.replaceAll("[^\\sA-Za-z]","");
 		input = input.toLowerCase();
-		System.out.println(input);
 		return input;
 	}
-
-	static void traverse(String[] array) {
-		for (String word: array) {
-			print(word);
-		}
-	}
-
-	static void print(String input) {
-		System.out.println(input);
-	}
-
 }
