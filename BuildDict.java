@@ -1,38 +1,108 @@
 import java.util.*;
+import java.io.*;
 
-	public class BuildDict {
+public class BuildDict {
+
+	// create a static dictionary 
+	public static TreeMap<String, Integer> dictionary = new TreeMap<String, Integer>();
 
 	public static void main(String[] args) {
 
-		// Test String input
-		String testString = "These are some words. to,,! put? into the dictionary   are    are Are";
-		String[] words = split(testString);
+		// 1. Get an array of valid text file names from user.
+		String[] files = GetInputFiles.getInput();
 
-		// Create the Dictionary 
-		HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
-		
-		//Check if each word exists already (frequency >  0) & add it if (frequency = 0) 
-		for (String key: words) {
-			Integer frequency = dictionary.get(key);
-			if (frequency == null) {
-				frequency = 1;
-			} else {
-				frequency++;
-			}
-			dictionary.put(key, frequency);
+		// 2. Add words from file to dictionary.
+		dictionary = createTree(files);
+
+		// 3. Check size of dictionary
+		System.out.println("Dictionary size = "+dictionary.size());
+
+		// 4. Print first words from dictionary.
+		printWordsFromDictionary(40);
+
+		//5. Write dictionary to myDict.dat file.
+		dictToFile();
+
+
+	}
+	public static void dictToFile(){
+		// 5. Write dictionary to myDict.dat
+		try{
+			FileOutputStream fileOutStream = new FileOutputStream("myDict.dat");
+			ObjectOutputStream objectOutStream = new ObjectOutputStream(fileOutStream);
+
+			objectOutStream.writeObject(dictionary);
+			objectOutStream.flush();
+			objectOutStream.close();
+
+			// Open myDict.dat and look at it's data.
+			FileInputStream fileInStream = new FileInputStream("myDict.dat");
+			ObjectInputStream objectInStream = new ObjectInputStream(fileInStream);
+
+			// Not sure how to fix this warning.
+			dictionary = (TreeMap <String, Integer>) objectInStream.readObject();
 		}
-
-		System.out.println(dictionary);
+		catch(IOException e){
+			System.out.println("File Error!");
+			e.printStackTrace();
+		}
+		catch(ClassNotFoundException e){
+			e.printStackTrace();
+		}
 
 	}
 
-	static String[] split(String input) {
-		// delete all non-spaces, non-letters @TODO what to do with numbers??
-		input = input.replaceAll("[^\\sA-Za-z0-9]","");
+	public static void printWordsFromDictionary(int numberOfWords){
+		// 4. Print first 40 words from dictionary.
+		int numberOfKeys = 40;
+		int currentKey = 0;
+		for (String key: dictionary.keySet()){
+			if (currentKey > numberOfKeys){
+				break;
+			}
+			currentKey++;
+			System.out.println(key);
+		}
+	}
+
+	public static TreeMap<String, Integer> createTree(String[] files) /*throws IOException*/ {
+		// TRY TO GET RID OF THIS LINE
+		//TreeMap<String, Integer> dictionary = new TreeMap<String, Integer>();
+		String word = "";
+		for (String file: files) {
+			Scanner s = null;
+			try {
+				s = new Scanner(new BufferedReader(new FileReader(file)));
+
+				while (s.hasNext()) {
+					word = split(s.next());
+					Integer frequency = dictionary.get(word);
+					if (frequency == null) {
+						frequency = 1;
+					} else {
+						frequency++;
+					}
+					dictionary.put(word, frequency);
+				}
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (s != null) {
+					s.close();
+				}
+			}
+		}
+		return dictionary;
+	}
+
+	public static String split(String input) {
+		// Delete all non-spaces, non-letters, & make all lowercase.
+		input = input.replaceAll("[^\\sA-Za-z]","");
 		input = input.toLowerCase();
-		print(input);
-		String[] words = new String(input).split(" ");
-		return words;
+		System.out.println(input);
+		return input;
 	}
 
 	static void traverse(String[] array) {
@@ -44,4 +114,5 @@ import java.util.*;
 	static void print(String input) {
 		System.out.println(input);
 	}
+
 }
