@@ -25,6 +25,7 @@ public class BuildDict {
 
 
 	}
+
 	public static void dictToFile(){
 		// 5. Write dictionary to myDict.dat
 		try{
