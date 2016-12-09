@@ -22,6 +22,7 @@ public class BuildDict {
 
 		//5. Write dictionary to myDict.dat file.
 		dictToFile();
+		readDictFromFile();
 
 
 	}
@@ -35,7 +36,16 @@ public class BuildDict {
 			objectOutStream.writeObject(dictionary);
 			objectOutStream.flush();
 			objectOutStream.close();
+		}
+		catch(IOException e){
+			System.out.println("File Error!");
+			e.printStackTrace();
+		}
+	}
 
+	// Read myDict.dat 
+	public static void readDictFromFile(){
+		try{
 			// Open myDict.dat and look at it's data.
 			FileInputStream fileInStream = new FileInputStream("myDict.dat");
 			ObjectInputStream objectInStream = new ObjectInputStream(fileInStream);
