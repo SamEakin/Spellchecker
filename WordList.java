@@ -1,3 +1,5 @@
+import java.util.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,17 +15,27 @@ public class WordList{
 	public int tableSize; // N
 
 	public int numberOfWords; // n
-	public float loadFactor; // N/n <= 1.5
+	public double loadFactor; // N/n <= 1.5
 
 	// Constructor
 	WordList(int size){
 		tableSize = size;
 		theArray = new Bucket[size];
+		loadFactor = 1.5;
 
 		// fill empty list
 		for(int i=0; i < tableSize; i++){
 			theArray[i] = new Bucket();
 		}
+	}
+
+	public boolean checkLoadFactor(int wordCount){
+		double tableLoad = (double)tableSize / (double)wordCount;
+		System.out.println("Load factor = "+tableLoad);
+		if (tableLoad > loadFactor) {
+			return false;	
+		}
+		return true;
 	}
 
 	public int getWordCount(){
@@ -36,20 +48,20 @@ public class WordList{
 	}
 
 	public int stringHashFunction(String word){
-		int hashKeyValue = word.hashCode() % tableSize;
-		if(hashKeyValue < 0)
-			hashKeyValue += tableSize;
+		int hashKeyValue = word.hashCode(); //% tableSize;
+		System.out.println(word+" --> "+word.hashCode());
+		//System.out.println(word+" --> "+hashKeyValue);
 		return hashKeyValue;
 	}
 
 
 	// Insert a word into the table
 	public void insertInTable(String word){
-		Word newWord = new Word(word);
-		String wordToHash = newWord.word;
-		int hashKey = stringHashFunction(wordToHash);
+		System.out.println("inserting -> "+word);
+		int hashKey = stringHashFunction(word);
+		Word newWord = new Word(word, hashKey);
 		
-		theArray[hashKey].insertInBucket(newWord, hashKey);
+		theArray[hashKey].insertInBucket(newWord);
 	}
 
 	// Find a word in the table
@@ -75,8 +87,9 @@ class Word{
 	public int key;
 	public Word next;
 
-	public Word(String word){
+	public Word(String word, int hashKey){
 		this.word = word;
+		this.key = hashKey;
 	}
 
 	public String toString(){
@@ -95,11 +108,10 @@ class Bucket{
 	public Word firstWord = null;
 
 	// Insert a word into table
-	public void insertInBucket(Word newWord, int hashKey){
+	public void insertInBucket(Word newWord){
 		Word previous = null;
 		Word current = firstWord;
 
-		newWord.key = hashKey;
 
 		while(current != null && newWord.key > current.key){
 			previous = current;
