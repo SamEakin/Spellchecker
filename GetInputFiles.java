@@ -9,7 +9,7 @@ public class GetInputFiles {
 	static String[] getInput(){
 		Scanner scan = new Scanner(System.in);
 
-		System.out.print("Enter the names of .txt files to read into the dictionary: ");
+		System.out.print("Enter the names of .txt files to read: ");
 
 		String input = scan.nextLine();
 		String[] files = new String(input).split(" ");

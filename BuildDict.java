@@ -77,8 +77,6 @@ public class BuildDict {
 	}
 
 	public static TreeMap<String, Integer> createTree(String[] files) /*throws IOException*/ {
-		// TRY TO GET RID OF THIS LINE
-		//TreeMap<String, Integer> dictionary = new TreeMap<String, Integer>();
 		String word = "";
 		for (String file: files) {
 			Scanner s = null;

@@ -32,6 +32,10 @@ public class WordList{
 		}
 	}
 
+	public int numberWords(){
+		return numberOfWords;
+	}
+
 	public void updateLoadFactor(){
 		currentLoadFactor = (double)numberOfWords / (double)tableSize;
 	}
@@ -50,11 +54,17 @@ public class WordList{
 	}
 
 	// Find a word in the table
+	public boolean find(String searchWord){
+		int hashKey = stringHashFunction(searchWord);
+		return theArray[hashKey].find(hashKey, searchWord);
+	}
+
+	/* Find a word in the table
 	public Word find(String searchWord){
 		int hashKey = stringHashFunction(searchWord);
 		Word theWord = theArray[hashKey].find(hashKey, searchWord);
 		return theWord;
-	}
+	}*/
 
 	public void displayArray(){
 		for(int i=0; i < tableSize; i++){
@@ -113,17 +123,17 @@ class Bucket{
 	}
 
 	// Find a word in the table
-	public Word find(int hashKey, String searchWord){
+	public boolean find(int hashKey, String searchWord){
 		Word current = firstWord;
 		while(current != null && current.key <= hashKey){
 			if(current.word.equals(searchWord)){
-				current.printWord();
-				return current;
+				//current.printWord();
+				return true;
 		}
 			current = current.next;
 		}
-		System.out.println("Word not found.");
-		return null;
+		//System.out.println("Word not found.");
+		return false;
 	}
 
 	public void printList(){

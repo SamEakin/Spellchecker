@@ -15,9 +15,84 @@ public class SpellCheck extends BuildDict{
 		int size = 100;
 		WordList table = readDictionaryIntoTable(size);
 
-		table.find("apple");
-		table.find("biography");
-		table.find("boigraphy");
+		// Get an array of valid text file names from user.
+		String[] files = GetInputFiles.getInput();
+		readFile(files, table);
+	}
+	
+	public static void readFile(String[] files, WordList table) {
+		for (String file: files) {
+			Scanner s = null;
+			try {
+				File inputFile = new File(file);
+				File outputFile = new File("revised_"+file);
+				BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+				//s = new Scanner(new BufferedReader(new FileReader(file)));
+				//BufferedWriter bw = new BufferedWriter(fw);
+				String originalText = "";
+				String line = "";
+
+				// Make a copy of the file to revise
+				while((line = reader.readLine()) != null){
+					originalText += line + System.getProperty("line.separator");
+				}
+				reader.close();
+
+				// Reread file by individual words now
+				String word = "";
+				String revisedText = originalText;
+				s = new Scanner(new BufferedReader(new FileReader(inputFile)));
+				while (s.hasNext()){
+					word = s.next();
+					boolean isCorrect = checkWord(word, table);
+					if(isCorrect){
+						// word is spelled correctly.
+					}
+					else{
+						// word is spelled incorrectly
+						// =word= append to new file
+						revisedText = revisedText.replace(word, flag(word));
+					}
+				}
+
+				String outputFileName = getOutputFileName(file);
+				FileWriter writer = new FileWriter(outputFileName);
+				writer.write(revisedText);
+				writer.close();
+			
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			finally {
+				if (s != null) {
+					s.close();
+				}
+			}
+		}
+	}
+
+	public static String getOutputFileName(String inputFileName){
+		if(inputFileName.contains(".")){
+			int n = inputFileName.indexOf(".");
+			return (inputFileName.substring(0,n)+".out");
+
+		}
+		return (inputFileName+".out");
+	}
+
+	public static String flag(String word){
+		return "="+word+"=";
+	}
+
+	// Delete all non-spaces, non-letters, & make all lowercase.
+	public static boolean checkWord(String word, WordList table) {
+		word = word.replaceAll("[^\\sA-Za-z]","");
+		word = word.toLowerCase();
+		if(word.length() >= 1){
+			return table.find(word);
+		}
+		return true;
 	}
 
 	public static void printKeys(){
