@@ -4,44 +4,31 @@ import java.io.*;
 public class SpellCheck extends BuildDict{
 
 	public static TreeMap<String, Integer> dictionary = new TreeMap<String, Integer>();
-	public static WordList<String, String> table = new WordList<String, String>();
 
 	public static void main(String[] args){
 
-		// 1. Create Empty Hash Table to put words inside.
-		System.out.println(table.getSize());
-		System.out.println(table.isEmpty());
-
-		// 2. Read words from myDict.dat into dictionary.
+		// Read words from myDict.dat into dictionary.
 		readDictFromFile();
 
-		// 3. Hash each word
-		readDictionary();
-		
-		// 4. Place all words from dictionary into table.
-		
+		// Create table
+		WordList table = new WordList(100);
 
+		// Hash each word & place all into table
+		readDictionaryIntoTable(table);
+
+		table.find("apple");
+		table.find("biography");
+		table.find("boigraphy");
+
+		System.out.println("Number of words = "+table.getWordCount());
 	}
 
-	public static void readDictionary(){
+	public static void readDictionaryIntoTable(WordList table){
 		for(String word : dictionary.keySet()){
 			// hash word and add to table
-			String key = hash(word);
-			System.out.println(key+" = "+word);
-		}	
+			table.insertInTable(word);
+		}
 	}
-
-	public static String hash(String word){
-		if(word.length() <= 1){return word.substring(0);}
-		String key = "";
-		key = word.substring(0, 1);
-		return key;
-	}
-
-	public static void add(){
-		// @TODO: add each word to table based on hash key
-	}
-
 
 	// Read myDict.dat into dictionary
 	public static void readDictFromFile(){
@@ -60,9 +47,7 @@ public class SpellCheck extends BuildDict{
 		catch(ClassNotFoundException e){
 			e.printStackTrace();
 		}
-
 	}
-
 }
 
 
