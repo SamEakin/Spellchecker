@@ -12,15 +12,12 @@ public class SpellCheck extends BuildDict{
 
 		// Create table &
 		// Hash each word inside as long as load factor acceptable
-			
-		int size = 1000;
+		int size = 100;
 		WordList table = readDictionaryIntoTable(size);
 
-		//table.find("apple");
-		//table.find("biography");
-		//table.find("boigraphy");
-
-		System.out.println("Number of words = "+table.getWordCount());
+		table.find("apple");
+		table.find("biography");
+		table.find("boigraphy");
 	}
 
 	public static void printKeys(){
@@ -32,23 +29,25 @@ public class SpellCheck extends BuildDict{
 
 		// Construct table
 		WordList table = new WordList(size);
-		int wordCount = 0;
 
-		// @TODO: WHY ISNT THIS WORKING
 		// hash word and add to table
 		for(String word : dictionary.keySet()){
-			//System.out.println(word);
-			if(word.length() > 1
-			table.insertInTable(word);
-			wordCount+=1;
-
+			if(word.length() >= 1){
+				table.insertInTable(word);
+				table.numberOfWords++;
+				table.updateLoadFactor();
+			}
+				
 			// if load factor is > 1.5 then double table size and rehash all words
-			//if(table.checkLoadFactor(wordCount) == false){
-				//System.out.println("Resizing table..."+wordCount);
-				//return readDictionaryIntoTable(size*2);
-			//}
+			if(table.currentLoadFactor > table.desiredLoadFactor){
+				System.out.println("Resizing table..."+table.numberOfWords+" currently in table.");
+				return readDictionaryIntoTable(table.tableSize*2);
+			}
 		}
 		System.out.println("TABLE IS COMPLETED!");
+		System.out.println("Number of words = "+table.numberOfWords);
+		System.out.println("Table size = "+table.tableSize);
+		System.out.println("Load = "+ (double)table.numberOfWords / (double)table.tableSize);
 		return table;
 	}
 

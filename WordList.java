@@ -15,13 +15,16 @@ public class WordList{
 	public int tableSize; // N
 
 	public int numberOfWords; // n
-	public double loadFactor; // N/n <= 1.5
+	public double currentLoadFactor; // N/n <= 1.5
+	public double desiredLoadFactor; 
 
 	// Constructor
 	WordList(int size){
 		tableSize = size;
 		theArray = new Bucket[size];
-		loadFactor = 1.5;
+		numberOfWords = 0;
+		currentLoadFactor = (double)numberOfWords/(double)tableSize;
+		desiredLoadFactor = 1.5;
 
 		// fill empty list
 		for(int i=0; i < tableSize; i++){
@@ -29,38 +32,20 @@ public class WordList{
 		}
 	}
 
-	public boolean checkLoadFactor(int wordCount){
-		double tableLoad = (double)tableSize / (double)wordCount;
-		System.out.println("Load factor = "+tableLoad);
-		if (tableLoad > loadFactor) {
-			return false;	
-		}
-		return true;
-	}
-
-	public int getWordCount(){
-		int count = 0;
-		for(int i = 0; i < tableSize; i++){
-			int wordsInCurrentBucket = theArray[i].numberOfWords;
-			count += wordsInCurrentBucket;
-		}
-		return count;
+	public void updateLoadFactor(){
+		currentLoadFactor = (double)numberOfWords / (double)tableSize;
 	}
 
 	public int stringHashFunction(String word){
-		int hashKeyValue = word.hashCode(); //% tableSize;
-		System.out.println(word+" --> "+word.hashCode());
-		//System.out.println(word+" --> "+hashKeyValue);
+		
+		int hashKeyValue = (word.hashCode() & 0x7fffffff) % tableSize;
 		return hashKeyValue;
 	}
 
-
 	// Insert a word into the table
 	public void insertInTable(String word){
-		System.out.println("inserting -> "+word);
 		int hashKey = stringHashFunction(word);
 		Word newWord = new Word(word, hashKey);
-		
 		theArray[hashKey].insertInBucket(newWord);
 	}
 
