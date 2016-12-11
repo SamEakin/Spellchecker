@@ -23,8 +23,6 @@ public class BuildDict {
 		//5. Write dictionary to myDict.dat file.
 		dictToFile();
 		readDictFromFile();
-
-
 	}
 
 	public static void dictToFile(){

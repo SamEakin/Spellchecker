@@ -1,7 +1,9 @@
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
-//import java.util.Scanner;
+
+/* This checks for files within the current directory and makes sure they exist before opening them.
+ */
 
 public class GetInputFiles {
 
@@ -20,7 +22,7 @@ public class GetInputFiles {
 			return getInput();
 		}
 	}
-
+	
 	// Makes sure each user entry exists within the current directory as a text file.
 	static boolean checkInput(String[] files) {
 		for (String fileName: files) {

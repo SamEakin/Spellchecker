@@ -19,8 +19,52 @@ public class SpellCheck extends BuildDict{
 		String[] files = GetInputFiles.getInput();
 		readFile(files, table);
 	}
+
+	public static String[] generateSuggestions(String input, WordList table){
+
+		System.out.println("Invalid word: "+input);
+
+		int numberOfSuggestions = 0;
+		String[] suggestions = new String[7];
+		suggestions[5] = "No change.";
+		suggestions[6] = "Enter your own choice.";
+
+		char[] word = input.toCharArray();
+		// iterate through each letter in the word
+		for(int i = 0; i < word.length; i++){
+			// try each letter of the alphabet to see if that makes a word
+			char[] permutedWord = input.toCharArray();
+			for(int j = 0; j < 26; j++) {
+				permutedWord[i] = ((char)('a'+j));
+				String testWord = String.valueOf(permutedWord);
+				if(checkWord(testWord, table)) {
+					if(numberOfSuggestions == 5) {return suggestions;}
+					else{
+						suggestions[numberOfSuggestions] = testWord;
+						numberOfSuggestions++;
+					}
+				}
+			}
+		}
+		return suggestions;
+	}
+
+	// Display suggestions for user and get their input
+	public static int chooseSuggestion(String originalWord, String[] suggestions){
+		int i = 0;
+		for(String suggestion: suggestions){
+			if(suggestion != null)
+				System.out.println("["+i+"] "+suggestion);
+			i++;
+		}
+		Scanner scan = new Scanner(System.in);
+		System.out.print("Enter your choice: ");
+		int choice = scan.nextInt();
+		return choice;
+	}
 	
 	public static void readFile(String[] files, WordList table) {
+		int extraCredit = extraCreditToggle();
 		for (String file: files) {
 			Scanner s = null;
 			try {
@@ -40,6 +84,7 @@ public class SpellCheck extends BuildDict{
 
 				// Reread file by individual words now
 				String word = "";
+				String correctedWord = "";
 				String revisedText = originalText;
 				s = new Scanner(new BufferedReader(new FileReader(inputFile)));
 				while (s.hasNext()){
@@ -50,8 +95,29 @@ public class SpellCheck extends BuildDict{
 					}
 					else{
 						// word is spelled incorrectly
-						// =word= append to new file
-						revisedText = revisedText.replace(word, flag(word));
+						// Depending on if extra credit is toggled
+						// Ask user what they want to do with the word
+						if(extraCredit == 2){
+							String[] suggestions = generateSuggestions(word, table);
+
+							int choice = -1;
+
+							choice = chooseSuggestion(word, suggestions);
+							if(choice == 6){
+								correctedWord = getUserInputWord();
+							}
+							if(choice > -1 && choice < 5){
+								correctedWord = suggestions[choice];
+							}
+							if(choice == 5){
+								correctedWord = word;
+							}
+						}
+						else{
+							// Make the change to the file according to user's choice.
+							correctedWord = flag(word);
+						}
+						revisedText = revisedText.replace(word, correctedWord);
 					}
 				}
 
@@ -70,6 +136,24 @@ public class SpellCheck extends BuildDict{
 				}
 			}
 		}
+	}
+
+	public static int extraCreditToggle(){
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Enter 1 for regular version of spellchecker.");
+		System.out.println("Enter 2 for extra credit version of spellchecker.");
+		int choice = 1;
+		choice = scan.nextInt();
+		return choice;
+	}
+
+	public static String getUserInputWord(){
+		Scanner scan = new Scanner(System.in);
+		System.out.println();
+		System.out.print("Enter a word: ");
+		String word = "";
+		word = scan.next();
+		return word;
 	}
 
 	public static String getOutputFileName(String inputFileName){

@@ -59,13 +59,6 @@ public class WordList{
 		return theArray[hashKey].find(hashKey, searchWord);
 	}
 
-	/* Find a word in the table
-	public Word find(String searchWord){
-		int hashKey = stringHashFunction(searchWord);
-		Word theWord = theArray[hashKey].find(hashKey, searchWord);
-		return theWord;
-	}*/
-
 	public void displayArray(){
 		for(int i=0; i < tableSize; i++){
 			System.out.println("Array index = "+i);
